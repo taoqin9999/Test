@@ -1,0 +1,26 @@
+{
+    "src": [
+        "webapp/lib/plugins.js",
+        "webapp/src/utils/main.js",
+        "webapp/src/data/**/*.js",
+        "webapp/src/utils/config.js",
+        "webapp/src/utils/log.js",
+        "webapp/src/utils/jqueryAjax.js",
+        "webapp/src/utils/Events.js",
+        "webapp/src/utils/EventManager.js",
+        "webapp/src/app/*"
+    ],
+    "doc": [
+        "webapp/lib/plugins.js",
+        "webapp/src/utils/main.js",
+        "webapp/src/data/**/*.js",
+        "webapp/src/utils/config.js",
+        "webapp/src/utils/log.js",
+        "webapp/src/utils/jqueryAjax.js",
+        "webapp/src/utils/EventManager.js",
+        "webapp/src/app/*"
+    ],
+    "build": "build",
+    "dest": "build/dist/netEase.js",
+    "min": "build/dist/netEase.min.js"
+}
