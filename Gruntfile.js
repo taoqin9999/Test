@@ -1,6 +1,8 @@
 module.exports = function(grunt) {
     'use strict';
 
+    var _ = require('underscore');
+
     require('load-grunt-tasks')(grunt, {
         pattern: ['grunt-*', '!grunt-template-jasmine-istanbul']
     });
@@ -9,66 +11,36 @@ module.exports = function(grunt) {
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-        netEase: grunt.file.readJSON('netEase.json'),
+        config: grunt.file.readJSON('config.json'),
+        watch: {
+            'options': {
+                'debounceDelay': 100,
+            },
+            'hogan': {
+                'files': ['webapp/src/page/*.html'],
+                'tasks': ['hogan']
+            }
+        },
         clean: {
             'options': {
                 'force': true
             },
-            'dist': ['<%= netEase.build %>/dist']
+            'dist': ['<%= config.build %>/dist']
         },
-        concat: {
-            ne: {
-                src: '<%= netEase.src %>',
-                dest: '<%= netEase.dest %>'
-            }
-        },
-        uglify: {
-            options: {
-                banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
-            },
-            dist: {
-                files: {
-                    '<%=netEase.min%>': '<%= netEase.dest %>'
-                }
-            }
-        },
-        jshint: {
-            files: ['webap/src/**/*.js'],
-            options: {
-                jshintrc: '.jshintrc',
-                reporter: 'jslint',
-                reporterOutput: '<%= netEase.build %>/report/jshint.xml'
-            }
-        },
-        watch: {
-            files: ['<%= jshint.files %>'],
-            tasks: ['jshint']
-        },
-        jsduck: {
-            main: {
-                src: ['<%= netEase.doc %>'],
-                dest: '<%= netEase.build %>/dist/docs',
+
+        hogan: {
+            'all': {
+                src: 'webapp/src/page/*.html',
+                dest: 'webapp/src/page/compiled.js',
                 options: {
-                    'title': 'netEase',
-                    'no-source': true,
-                    'builtin-classes': true
+                    binderName: 'hulk',
+                    nameFunc: function(fileName) {
+                        return _.last(/(\w*)\/(\w*)\.html/.exec(fileName), 2).join('.');
+                    }
                 }
-            }
-        },
-        /*http://ued.fanxing.com/javascriptdan-yuan-ce-shi-kuang-jia-jasmine/*/
-        jasmine: {
-            src: ['webapp/lib/jquery.js', 'webapp/lib/lodash-2.4.1.js', 'build/dist/net_ease.js'],
-            options: {
-                specs: 'test/**/*Spec.js',
-                helpers: 'test/**/*Helper.js',
-                keepRunner: true,
-                '--local-to-remote-url-access': true,
-                '--ignore-ssl-errors': true
             }
         }
     });
 
-    grunt.registerTask('doc', ['jsduck']);
-    grunt.registerTask('default', ['clean', 'jshint', 'concat', 'uglify', 'doc']);
-    grunt.registerTask('package', ['concat', 'uglify']);
+    grunt.registerTask('default', ['hogan']);
 };
