@@ -16,9 +16,9 @@
 
     win.container = $('#container');
 
-    require(['core/WindowManager'], function(WindowManager) {
-        win.gWindowManager = WindowManager;
-    });
+    // require(['core/WindowManager'], function(WindowManager) {
+    //     win.gWindowManager = WindowManager;
+    // });
 
 
 })(window);

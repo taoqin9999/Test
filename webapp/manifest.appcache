@@ -1,10 +1,9 @@
 CACHE MANIFEST
-#TIMESTAMP
+#TIMESTAMP1
 
 CACHE:
 # 需要缓存的列表
-src/css/all.css
-src/js/all.js
+main.js
 
 NETWORK:
 # 不需要缓存的
