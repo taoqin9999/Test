@@ -123,6 +123,7 @@
         "$pres": true,
         "$": true,
 
-        "define": true
+        "define": true,
+        "templates": true
     } // additional predefined global variables
 }

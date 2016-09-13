@@ -3,32 +3,54 @@ define(function(require, exports, module) {
 
     var application = require('./application');
 
+    var log = new netEase.Log('RouteManager.js');
+
     var controllers = [];
+
+    var $container = $('#container');
 
     exports = module.exports = {
         init: function() {
-            var self = this;
 
-            window.onpopstate = function() {
-                var state = history.state || {};
-                var url = location.hash.indexOf('#') === 0 ? location.hash : '#home';
+        },
+        pushState: function(viewId, data) {
+            var retDfd = $.Deferred();
 
-                var pageIndex = _.findIndex(controllers, function(controller) {
-                    return controller._viewUrl === url;
-                });
+            var View = application.getView(viewId);
 
-                if (pageIndex > -1) {
-                    self.go(pageIndex + 1);
-                } else {
-                    var View = application.getView(url);
+            if (!View) {
+                log.error('viewId不存在：' + viewId);
+                return;
+            }
 
-                    if (View) {
-                        self._setState(url, state);
-                    } else {
-                        self.home();
-                    }
-                }
-            };
+            //隐藏上一个页面
+            var currentController = controllers[controllers.length - 1];
+            if (currentController) {
+                currentController.hideView();
+            }
+
+            currentController = new View.controller(data);
+
+            //获取模板初始化数据
+            currentController.loadData().done(function(params) {
+                _.extend(data, params);
+
+                currentController._viewId = '#' + viewId;
+
+                $container.append(currentController.viewHtml());
+
+                currentController.initView();
+
+                controllers.push(currentController);
+
+                retDfd.resolve(currentController);
+            }).fail(retDfd.reject);
+
+
+            history.pushState(data, null, '#' + viewId);
+
+
+            return retDfd;
         }
     };
 });
